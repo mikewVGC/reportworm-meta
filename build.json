@@ -1,6 +1,7 @@
 {
     "builder": {
         "steps": [
+            "pack",
             "copy",
             "build"
         ],
@@ -8,6 +9,15 @@
             "tpl": "site/html",
             "js": "site/js",
             "css": "site/css"
+        },
+        "pack": {
+            "type": "command",
+            "condition": {
+                "type": "flag",
+                "name": "mode",
+                "value": "prod"
+            },
+            "run": [ "go", "run", "scripts/packer/main.go" ]
         },
         "copy": {
             "type": "copy",
@@ -41,9 +51,14 @@
                 },
                 {
                     "token": "__GOOGLE_ANALYTICS__",
+                    "type": "tpl",
+                    "ref": "analytics"
+                },
+                {
+                    "token": "__GOOGLE_TAG__",
                     "type": "value",
-                    "location": "value",
-                    "value": ""
+                    "location": "config",
+                    "key": "google_tag"
                 },
                 {
                     "token": "__STYLESHEET_FILE__",
@@ -59,7 +74,7 @@
                     "type": "flag",
                     "name": "mode",
                     "values": [
-                        { "value": "prod", "type": "tpl", "ref": "vue" },
+                        { "value": "prod", "type": "tpl", "ref": "vue-prod" },
                         { "value": "dev", "type": "tpl", "ref": "vue" },
                         { "value": "local", "type": "tpl", "ref": "vue" }
                     ]
@@ -84,6 +99,16 @@
                     "value": "year"
                 }
             ]
+        }
+    },
+    "packer": {
+        "tpl_dir": "site",
+        "out_dir": "public/static",
+        "css": {
+            "css/main.css": "main.min.css"
+        },
+        "js": {
+            "js/main.js": "main.min.js"
         }
     }
 }
