@@ -1,0 +1,470 @@
+body {
+    font: 1.1em Helvetica, Arial, sans-serif;
+    background: #FFFFFF;
+    color: #000000;
+}
+
+a {
+    color: #0D47A1;
+}
+
+h2 em, h3 em {
+    font-size: .8em;
+    color: #66666A;
+    font-weight: normal;
+}
+
+div#app {
+    max-width: 50em;
+    margin: auto;
+    position: relative;
+}
+
+header#header {
+    position: relative;
+}
+
+header#header a {
+    display: block;
+    height: 90%;
+    width: 100%;
+    max-width: 375px;
+}
+
+header#header h1 {
+    height: 160px;
+    margin: 0;
+    font-size: 0;
+    background-image: url(/static/img/logo-black.png);
+    background-repeat: no-repeat;
+    background-size: auto 150px;
+    background-position-y: 5px;
+    position: relative;
+    z-index: 1;
+}
+
+.tabgroup {
+    background: #F0F0F0;
+    border: 1px solid #254852;
+    border-radius: .45em;
+    padding: .2em 0;
+    position: relative;
+    top: -10px;
+}
+
+.tabgroup div {
+    display: inline-block;
+    padding: .5em 1em .5em 1em;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+th, td {
+    padding: .3em .4em;
+}
+
+th {
+    background: #404048;
+    color: #FFFFFF;
+    text-align: left;
+    font-weight: bold;
+}
+
+tr {
+    border-bottom: 1px solid #A0A0A0;
+}
+
+tr:nth-child(odd) {
+    background: #E8E8E8;
+}
+
+td {
+    vertical-align: middle;
+}
+
+th.sortable {
+    background-image: url(/static/img/sort-unsorted.png);
+    background-repeat: no-repeat;
+    background-position: 90% 50%;
+    background-size: .75em;
+    padding-right: 1.5em;
+    cursor: pointer;
+}
+
+th.sortable.up {
+    background-image: url(/static/img/sort-up.png);
+}
+
+th.sortable.down {
+    background-image: url(/static/img/sort-down.png);
+}
+
+footer {
+    text-align: center;
+    font-size: .8em;
+}
+
+footer p {
+    line-height: 1.6em;
+}
+
+[v-cloak] {
+    display: none !important;
+}
+
+.popup-main {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background: rgba(255, 255, 255, 0.95);
+    z-index: 10;
+    text-align: center;
+    padding-top: 3em;
+}
+
+.popup {
+    border: 1px solid #000000;
+    background: #FFFFFF;
+    padding: 1em;
+    border-radius: 1em;
+    position: fixed;
+    top: 5em;
+    left: 50%;
+    margin-left: -26em;
+    width: 50em;
+    height: 70%;
+    text-align: left;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.close {
+    float: right;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.popup .content-scroll {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    height: 72%;
+}
+
+.meta-table table {
+}
+
+.meta-table table td {
+    text-align: right;
+}
+
+.meta-table table td:nth-child(5) {
+    text-align: center;
+}
+
+.meta-table table td:nth-child(6),
+.meta-table table td:nth-child(8)
+{
+    text-align: left;
+}
+
+table#meta-teams td:nth-child(8) {
+    width: 240px;
+}
+
+table#meta-teams td:nth-child(9) {
+    text-align: left;
+}
+
+.meta-mons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1em;
+}
+
+.meta-mons > div {
+    overflow: scroll;
+}
+
+.meta-mons table {
+    font-size: .9em;
+}
+
+.monicon {
+    width: 40px;
+    height: 30px;
+    display: inline-block;
+    background: url(/static/img/pokemonicons-sheet.png) no-repeat;
+    overflow: hidden;
+    text-indent: -9999em;
+    image-rendering: pixelated;
+}
+
+.info-block {
+    background: #B8EEFC;
+    color: #254852;
+    border: 1px solid #254852;
+    border-radius: .2em;
+    padding: .5em;
+    margin-top: .5em;
+}
+
+.event-list a {
+    display: grid;
+    grid-template-columns: 70% 1fr;
+    border: 1px solid #254852;
+    background: #F0F0F0;
+    border-radius: .25em;
+    margin-bottom: .5em;
+    text-decoration: none;
+}
+
+.event-list a:nth-child(even) {
+    background: #FAFAFA;
+}
+
+.event-list a > div {
+    padding: .5em .75em;
+}
+
+.event-list div strong {
+    font-size: .9em;
+    color: #444444;
+}
+
+.event-list div em {
+    font-size: .9em;
+    color: #444444;
+}
+
+.event-list div .event-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.event-list div .player-count {
+    color: #000000;
+}
+
+#player-team-info td:first-child {
+    text-align: right;
+}
+
+#player-team-info em {
+    font-size: .9em;
+}
+
+#player-team-info a {
+    display: block;
+}
+
+.sm-icon {
+    width: 16px;
+    height: 16px;
+    background-size: 14px 14px;
+    background-repeat: no-repeat;
+    background-position: 2px 2px;
+    display: inline-block;
+}
+
+.ext-link-icon {
+    background-image: url(/static/img/ext-link-light.png);
+    margin-left: .25em;
+}
+
+.mag-icon {
+    background-image: url(/static/img/mag-glass-light.png);
+    margin-right: .25em;
+}
+
+/* this is like 800px display? ... works for sideways phones */
+@media (max-width: 55.5em) {
+}
+
+/* mobile */
+@media (max-width: 45.5em) {
+    .popup-main {
+    }
+
+    .popup {
+        left: 0;
+        margin-left: 0;
+        width: calc(100% - 2em - 2px);
+    }
+
+    .meta-mons {
+        display: block;
+    }
+
+    #meta-teams thead {
+        display: none;
+    }
+
+    #meta-teams tr {
+        display: block;
+    }
+
+    #meta-teams tr td {
+        display: inline-block;
+    }
+
+    #meta-teams td::before {
+        font-size: .8em;
+        display: block;
+        text-align: center;
+    }
+
+    #meta-teams td:nth-child(1)::before {
+        content: "Cut";
+    }
+
+    #meta-teams td:nth-child(1) {
+        text-align: center;
+        width: 10%;
+    }
+
+    #meta-teams td:nth-child(2)::before {
+        content: "Total";
+    }
+
+    #meta-teams td:nth-child(2) {
+        text-align: center;
+        width: 10%;
+    }
+
+    #meta-teams td:nth-child(3)::before {
+        content: "Cut Rate";
+    }
+
+    #meta-teams td:nth-child(3) {
+        text-align: center;
+        width: 15%;
+    }
+
+    #meta-teams td:nth-child(4) {
+        text-align: center;
+        width: 10%;
+    }
+
+    #meta-teams td:nth-child(4)::before {
+        content: "W";
+    }
+
+    #meta-teams td:nth-child(5) {
+        display: none;
+    }
+
+    #meta-teams td:nth-child(6) {
+        text-align: center;
+        width: 10%;
+    }
+
+    #meta-teams td:nth-child(6)::before {
+        content: "L";
+    }
+
+    #meta-teams td:nth-child(7) {
+        text-align: center;
+        width: 20%;
+    }
+
+    #meta-teams td:nth-child(7)::before {
+        content: "Win Rate";
+    }
+
+    #meta-teams td:nth-child(8)::before {
+        content: "Team";
+        text-align: left;
+    }
+}
+
+/* dark mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #212121;
+        color: #FFFFFF;
+    }
+
+    a {
+        color: #4FC3F7;
+    }
+
+    h2 em, h3 em {
+        color: #A0A0A0;
+    }
+
+    input, select {
+        background-color: #606068;
+        color: #E8E8E8;
+    }
+
+    th {
+        background: #404048;
+        color: #FFFFFF;
+    }
+
+    tr {
+        border-bottom: 1px solid #808088;
+    }
+
+    tr:nth-child(odd) {
+        background: #2E2E34;
+    }
+
+    header#header h1 {
+        background-image: url(/static/img/logo-white.png);
+    }
+
+    .tabgroup {
+        background: #303038;
+        border: 1px solid #88888A;
+    }
+
+    .popup-main {
+        background: rgba(0, 0, 0, 0.75);
+    }
+
+    .popup {
+        border: 1px solid #FFFFFF;
+        background: #000000;
+    }
+
+    .event-list a {
+        border: 1px solid #88888A;
+        background: #303038;
+    }
+
+    .event-list a:nth-child(even) {
+        background: #404048;
+    }
+
+    .event-list div strong {
+        color: #FFFFFF;
+    }
+
+    .event-list div em {
+        color: #FFFFFF;
+    }
+
+    .event-list div .player-count {
+        color: #E0E0E0;
+    }
+
+    .ext-link-icon {
+        background-image: url(/static/img/ext-link-dark.png);
+    }
+
+    .mag-icon {
+        background-image: url(/static/img/mag-glass-dark.png);
+    }
+
+    /* mobile dark mode */
+    @media (max-width: 30.5em) {
+    }
+}

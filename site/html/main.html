@@ -1,0 +1,284 @@
+__TEMPLATE_HEADER__
+
+<body>
+
+<div id="app">
+
+    <Transition>
+        <section class="popup-main" @click.self.stop="closePopup()" v-if="showTeam" v-cloak>
+            <div class="popup">
+
+                <div class="close" @click.stop="closePopup()">&times;</div>
+
+                <h2>Top Cut Results</h2>
+
+                <div>
+                    <div
+                        v-for="mon in teamPlayers.mons"
+                        class="monicon"
+                        :style="{ backgroundPosition: getSpritePos(mon) }"
+                        :title="getMonData(mon).name"
+                    ></div>
+                </div>
+
+                <p><strong>Team:</strong> {{ teamPlayers.fullTeamString }}</p>
+
+                <div class="content-scroll">
+
+                    <table id="player-team-info">
+                        <thead>
+                            <tr>
+                                <th colspan="3">Place</th>
+                                <th>Player</th>
+                                <th colspan="2">Event</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="player in teamPlayers.teams">
+                                <td>{{ player['place'] }}</td>
+                                <td>/</td>
+                                <td>{{ player['players'] }}</td>
+                                <td>
+                                    <a :href="`https://standings.reportworm.com/${player['link']}`"
+                                        data-pass="1"
+                                        target="_blank"
+                                    >{{ player['name'] }}<div class="sm-icon ext-link-icon"></div></a>
+                                </td>
+                                <td>
+                                    <span 
+                                        v-if="!player['link'].startsWith('grassroots')" 
+                                        v-cloak
+                                    >&#9733;</span>
+                                </td>
+                                <td>
+                                    <strong>{{ player['event'] }}</strong><br />
+                                    <em>{{ player['link'].startsWith('grassroots') ? 'Grassroots' : 'Official' }}</em>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </section>
+    </Transition>
+
+    <header id="header">
+        <h1><a href="/">Reportworm Meta</a></h1>
+    </header>
+
+    <nav>
+        <div class="tabgroup">
+            <div>&nbsp;</div>
+        </div>
+    </nav>
+
+    <p><em>Reportworm Meta</em> builds a snapshot of the current metagame based on results from teams that have top cut official events and certain online tournaments. The intent is to give an idea of what Pokemon are being used to the most success for best of three, open teamsheet tournaments.</p>
+
+    <component
+        :is="currentView"
+        v-bind="currentProps"
+        @sort-teams="sortTeams"
+        @sort-mons="sortMons"
+        @show-team="showTeamPopup"
+    ></component>
+
+    <h2 @click="toggleCredits()" id="creditsTitle">
+        Credits 
+        <span v-if="!showCredits" v-cloak>&#9656;</span>
+        <span v-if="showCredits" v-cloak>&#9662;</span>
+    </h2>
+
+    <ul v-if="showCredits" v-cloak>
+        <li><p>Programming and site design is by <a href="https://bsky.app/profile/mikew.reportworm.com" target="_blank">Mike W</a>, who you can find on BlueSky, I guess (I also have <a href="http://twitter.com/mikewVGC" target="_blank">a Twitter</a>). A few VGC projects (including this one) can be found <a href="https://github.com/mikewVGC" data-pass="1" target="_blank">on my Github</a>.</p></li>
+
+        <li><p>Match data aggregated from <a href="https://rk9.gg" data-pass="1" target="_blank">RK9 Labs</a>, <a href="https://playlatam.net" target="_blank">playlatam</a>, and <a href="https://www.pokedata.ovh" target="_blank">Pokedata</a> for official events, and Battlefy and Limitless for grassroots events.</p></li>
+
+        <li><p>The wonderful Reportworm logo is by <a href="https://twitter.com/Chufflepop" data-pass="1" target="_blank">Chufflepop</a>.</p></li>
+
+        <li><p>Small sprites come from <a href="https://play.pokemonshowdown.com/" data-pass="1" target="_blank">Pokemon Showdown</a> (specifically the <a href="https://github.com/smogon/sprites" data-pass="1" target="_blank">smogon/sprites</a> repo).</p></li>
+
+        <li><p>This site uses <a href="https://vuejs.org" data-pass="1" target="_blank">Vue.js</a> for the front-end. Flag icons provided by <a href="https://flagicons.lipis.dev" data-pass="1" target="_blank">Flag Icons</a>.</p></li>
+
+        <li><p>Reportworm Meta proudly contains 0% AI generated code, and is made in New York. You can check out the <a href="https://github.com/mikewVGC/reportworm-meta" data-pass="1" target="_blank">the Github repo</a> if you're interested.</p></li>
+    </ul>
+
+    __TEMPLATE_FOOTER__
+
+</div>
+
+<template id="loading-template">
+
+    <div id="loading">
+        <h2>Loading Data</h2>
+        <p>It'll be ready in just a moment...</p>
+    </div>
+
+</template>
+
+<template id="report-template">
+
+    <h2>The Metagame</h2>
+
+    <p><strong>Current Format:</strong> {{ info.format }}</p>
+
+    <div class="meta-layout">
+
+        <h3>Most Successful Teams</h3>
+
+        <div class="meta-table">
+
+            <table id="meta-teams">
+                <thead>
+                    <tr>
+                        <th class="sortable down"
+                            data-column="count"
+                            @click="sortTeams"
+                        >Cut</th>
+                        <th class="sortable"
+                            data-column="total"
+                            @click="sortTeams"
+                        >Total</th>
+                        <th class="sortable"
+                            data-column="cutRate"
+                            @click="sortTeams"
+                        >Cut Rate</th>
+                        <th colspan="3"
+                            class="sortable"
+                            data-column="wins"
+                            @click="sortTeams"
+                        >Record</th>
+                        <th class="sortable"
+                            data-column="winRate"
+                            @click="sortTeams"
+                        >Win Rate</th>
+                        <th>Team</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="monData in metaTeams.data">
+                        <td>{{ monData.count }}</td>
+                        <td>{{ monData.total }}</td>
+                        <td>{{ getPct(monData.cutRate) }}</td>
+                        <td>{{ monData.wins }}</td>
+                        <td>-</td>
+                        <td>{{ monData.losses }}</td>
+                        <td>{{ getPct(monData.winRate) }}</td>
+                        <td>
+                            <div
+                                v-for="mon in monData.mons"
+                                class="monicon"
+                                :style="{ backgroundPosition: getSpritePos(mon) }"
+                                :title="getMonData(mon).name"
+                            ></div>
+                        </td>
+                        <td>
+                            <a href="" @click="showTeamPopup(monData)"><div class="sm-icon mag-icon"></div>Results</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <h3>Most Successful Pokemon</h3>
+
+        <div class="meta-table meta-mons">
+
+            <div v-for="monDataHalf in metaMonsData">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mon</th>
+                            <th class="sortable down"
+                                data-column="count"
+                                @click="sortMons"
+                            >Cut</th>
+                            <th class="sortable"
+                                data-column="total"
+                                @click="sortMons"
+                            >Total</th>
+                            <th class="sortable"
+                                data-column="cutRate"
+                                @click="sortMons"
+                                title="Cut Rate"
+                            >CR</th>
+                            <th colspan="3"
+                                class="sortable"
+                                data-column="wins"
+                                @click="sortMons"
+                            >Record</th>
+                            <th class="sortable"
+                                data-column="winRate"
+                                @click="sortMons"
+                                title="Win Rate"
+                            >WR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="monData in monDataHalf">
+                            <td>
+                                <div
+                                    v-for="mon in monData.mons"
+                                    class="monicon"
+                                    :style="{ backgroundPosition: getSpritePos(mon) }"
+                                    :title="getMonData(mon).name"
+                                ></div>
+                            </td>
+                            <td>{{ monData.count }}</td>
+                            <td>{{ monData.total }}</td>
+                            <td>{{ getPct(monData.count / monData.total) }}</td>
+                            <td>{{ monData.wins }}</td>
+                            <td>-</td>
+                            <td>{{ monData.losses }}</td>
+                            <td>{{ getPct(monData.wins / (monData.losses + monData.wins)) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <h2>Sourced Events</h2>
+
+    <p>Data was aggregated from the following events (all viewable on <em><a href="https://standings.reportworm.com/" target="_blank" data-pass="1">Reportworm Standings</a></em>):</p>
+
+    <div class="event-list">
+        <template v-for="event in events">
+        <a
+            :href="`http://standings.reportworm.com/${event.year}/${event.code}`"
+            data-pass="1"
+            target="_blank"
+        >
+            <div>
+                <strong>{{ event.year == 'grassroots' ? 'Grassroots' : 'Official' }} Event</strong>
+                <div class="event-name">{{ event.name }}</div>
+                <em>{{ event.date }}</em>
+            </div>
+            <div>
+                <strong>Players</strong>
+                <div class="player-count">{{ event.players }}</div>
+            </div>
+        </a>
+        </template>
+    </div>
+    
+</template>
+
+__VUE__
+
+<script type="module">
+import { createApp } from 'vue';
+import App from '__SCRIPT_FILE__';
+export default App;
+const app = createApp(App).mount('#app');
+
+app.init();
+</script>
+
+</body>
+</html>

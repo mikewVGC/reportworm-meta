@@ -1,0 +1,10 @@
+config.json
+public/data/*
+public/static/*.js
+public/static/*.css
+public/static/img/pokemonicons-sheet.png
+public/index.html
+venv
+.venv
+.ruff_cache
+__pycache__

@@ -1,0 +1,89 @@
+{
+    "builder": {
+        "steps": [
+            "copy",
+            "build"
+        ],
+        "refs": {
+            "tpl": "site/html",
+            "js": "site/js",
+            "css": "site/css"
+        },
+        "copy": {
+            "type": "copy",
+            "condition": {
+                "type": "flag",
+                "name": "mode",
+                "value": "dev"
+            },
+            "files": [
+                {
+                    "type": "js",
+                    "ref": "main",
+                    "dest": "public/static/"
+                },
+                {
+                    "type": "css",
+                    "ref": "main",
+                    "dest": "public/static/"
+                }
+            ]
+        },
+        "build": {
+            "type": "html",
+            "base-ref": "main",
+            "out": "public/index.html",
+            "tokens": [
+                {
+                    "token": "__TEMPLATE_HEADER__",
+                    "type": "tpl",
+                    "ref": "head"
+                },
+                {
+                    "token": "__GOOGLE_ANALYTICS__",
+                    "type": "value",
+                    "location": "value",
+                    "value": ""
+                },
+                {
+                    "token": "__STYLESHEET_FILE__",
+                    "type": "flag",
+                    "name": "mode",
+                    "values": [
+                        { "value": "prod", "type": "filename", "location": "/static/main.min.css", "ts": true },
+                        { "values": [ "dev", "local" ], "type": "filename", "location": "/static/main.css", "ts": true }
+                    ]
+                },
+                {
+                    "token": "__VUE__",
+                    "type": "flag",
+                    "name": "mode",
+                    "values": [
+                        { "value": "prod", "type": "tpl", "ref": "vue" },
+                        { "value": "dev", "type": "tpl", "ref": "vue" },
+                        { "value": "local", "type": "tpl", "ref": "vue" }
+                    ]
+                },
+                {
+                    "token": "__TEMPLATE_FOOTER__",
+                    "type": "tpl",
+                    "ref": "footer"
+                },
+                {
+                    "token": "__SCRIPT_FILE__",
+                    "type": "flag",
+                    "name": "mode",
+                    "values": [
+                        { "value": "prod", "type": "filename", "location": "/static/main.min.js", "ts": true },
+                        { "values": [ "dev", "local" ], "type": "filename", "location": "/static/main.js", "ts": true }
+                    ]
+                },
+                {
+                    "token": "__YEAR__",
+                    "type": "date",
+                    "value": "year"
+                }
+            ]
+        }
+    }
+}
