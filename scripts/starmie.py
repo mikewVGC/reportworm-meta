@@ -150,10 +150,6 @@ def main():
                 "players": event_info['playerCount'],
             })
 
-
-    # TODO: cut down on this list by removing mons not in the meta list(s)
-    meta['lookup'] = mon_lookup
-
     counts = Counter()
 
     for t in teams:
@@ -204,6 +200,14 @@ def main():
             
         meta['meta'].append(meta_info)
 
+    # reduce mon_lookup to just what's needed
+    meta_mons = {}
+    for meta_data in meta['meta']:
+        for mon_data in meta_data['data']:
+            for mon in mon_data['mons']:
+                meta_mons[mon] = mon_lookup[mon]
+
+    meta['lookup'] = meta_mons
 
     # loop through events again to collect winrates
     for event_info in events:
@@ -229,9 +233,8 @@ def main():
                         meta['meta'][n]['data'][i]['wins'] += player['record']['w']
                         meta['meta'][n]['data'][i]['losses'] += player['record']['l']
 
-
     with open(f"{config.output_dir}/report.json", "w") as file:
-        file.write(json.dumps(meta, indent=2))
+        file.write(json.dumps(meta, indent=2 if config.mode == 'dev' else None))
 
 if __name__ == "__main__":
     main()

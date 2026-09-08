@@ -13,8 +13,14 @@ Requires you have Reportworm Standings or at the very least all the data needed 
     "output_dir": "public/data",
     "sprite_coords": "../sd-spriter/output/map-coords.json",
     "google_tag": "",
-    "prod": true
+    "mode": "dev"
 }
+```
+
+You'll also need to create a venv:
+
+```
+python -m venv .venv
 ```
 
 ## Report Builder (Starmie)
