@@ -195,6 +195,28 @@ table#meta-teams td:nth-child(9) {
     font-size: .9em;
 }
 
+.meta-mons table td:nth-child(5) {
+    text-align: right;
+}
+
+.meta-mons table td:nth-child(6) {
+    text-align: center;
+}
+
+.meta-mons table td:nth-child(7) {
+    text-align: left;
+}
+
+.meta-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1em;
+}
+
+.meta-info p:last-child {
+    text-align: right;
+}
+
 .monicon {
     width: 40px;
     height: 30px;

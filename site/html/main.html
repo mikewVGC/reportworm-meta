@@ -120,7 +120,11 @@ __TEMPLATE_HEADER__
 
     <h2>The Metagame</h2>
 
-    <p><strong>Current Format:</strong> {{ info.format }}</p>
+    <div class="meta-info">
+        <p><strong>Current Format:</strong> {{ info.format }}</p>
+
+        <p><strong>Build Time:</strong> <em>{{ info.build }}</em></p>
+    </div>
 
     <div class="meta-layout">
 

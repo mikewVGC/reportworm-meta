@@ -5,6 +5,7 @@ import itertools
 import json
 
 from collections import Counter, defaultdict
+from datetime import datetime
 
 from reportworm_builder.builder import Builder
 from reportworm_builder.builder_cache import BuilderCache
@@ -88,6 +89,7 @@ def main():
     meta = {
         "info": {
             "format": event_format,
+            "build": datetime.now().strftime("%b %d, %Y %H:%M EST"),
         },
         "events": [],
         "meta": [],
