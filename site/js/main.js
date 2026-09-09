@@ -21,6 +21,8 @@ export default {
                 teams: { column: 'count', dir: 1 },
                 mons: { column: 'count', dir: 1 },
             },
+
+            sortTables: false,
         }
     },
     computed: {
@@ -191,37 +193,50 @@ export default {
             this.showCredits = !this.showCredits;
         },
 
-        sortData(sortData, sortList) {
-            let sortInfo = this.sorts.teams;
+        sortData(sortData) {
+            const {
+                type: sortType,
+                column,
+            } = sortData;
 
-            const col = sortData.column;
-            if (sortInfo.column == col) {
+            let sortInfo = this.sorts[sortType];
+            let sortList = sortType == 'mons' ? this.metaMons : this.metaTeams;
+
+            if (sortInfo.column == column) {
                 sortInfo.dir *= -1;
             } else {
-                sortInfo.column = col;
+                sortInfo.column = column;
                 sortInfo.dir = 1;
             }
 
-            sortData.target.classList.add(
-                sortInfo.dir < 0 ? 'up' : 'down'
-            );
-
             sortList.data.sort((a, b) => {
-                if (a[col] < b[col]) {
+                if (a[column] < b[column]) {
                     return sortInfo.dir;
-                } else if (a[col] > b[col]) {
+                } else if (a[column] > b[column]) {
                     return -sortInfo.dir;
                 }
                 return 0;
             });
+
+            this.displayTableSorting();
         },
 
-        sortTeams(sortData) {
-            this.sortData(sortData, this.metaTeams);
-        },
+        displayTableSorting(sortType) {
+            if (!this.sortTables) {
+                this.sortTables = {
+                    teams: document.querySelectorAll('#meta-teams th'),
+                    mons: document.querySelectorAll('.meta-mons-half th'),
+                };
+            }
 
-        sortMons(sortData) {
-            this.sortData(sortData, this.metaMons);
+            for (let sort of [ 'teams', 'mons' ]) {
+                Array.from(this.sortTables[sort]).forEach(c => {
+                    c.classList.remove('up', 'down');
+                    if (this.sorts[sort].column == c.dataset.column) {
+                        c.classList.add(this.sorts[sort].dir < 0 ? 'up' : 'down');
+                    }
+                });
+            }
         },
 
         showTeamPopup(teamData) {
@@ -267,8 +282,7 @@ export default {
                 },
             },
             emits: [
-                'sort-teams',
-                'sort-mons',
+                'sort-data',
                 'show-team',
             ],
             methods: {
@@ -281,21 +295,17 @@ export default {
                 getPct(dec, precision) {
                     return this.$parent.getPct(dec, precision);
                 },
-                resetTable(node) {
-                    Array.from(node.parentNode.children).forEach(c => {
-                        c.classList.remove('up', 'down');
+                sortTeams(e) {
+                    this.$emit('sort-data', {
+                        type: 'teams',
+                        column: e.target.dataset.column,
                     });
                 },
-                sortTeams(e) {
-                    this.resetTable(e.target);
-                    this.$emit('sort-teams', { column: e.target.dataset.column, target: e.target });
-                },
                 sortMons(e) {
-                    this.resetTable(e.target);
-                    this.$emit('sort-mons', { column: e.target.dataset.column, target: e.target });
-                },
-                getSortedClass() {
-                    return '';
+                    this.$emit('sort-data', {
+                        type: 'mons',
+                        column: e.target.dataset.column,
+                    });
                 },
                 showTeamPopup(monData) {
                     this.$emit('show-team', { monData: monData });

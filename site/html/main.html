@@ -78,8 +78,7 @@ __TEMPLATE_HEADER__
     <component
         :is="currentView"
         v-bind="currentProps"
-        @sort-teams="sortTeams"
-        @sort-mons="sortMons"
+        @sort-data="sortData"
         @show-team="showTeamPopup"
     ></component>
 
@@ -123,7 +122,7 @@ __TEMPLATE_HEADER__
     <div class="meta-info">
         <p><strong>Current Format:</strong> {{ info.format }}</p>
 
-        <p><strong>Build Time:</strong> <em>{{ info.build }}</em></p>
+        <p><strong>Compiled:</strong> <em>{{ info.build }}</em></p>
     </div>
 
     <div class="meta-layout">
@@ -170,12 +169,14 @@ __TEMPLATE_HEADER__
                         <td>{{ monData.losses }}</td>
                         <td>{{ getPct(monData.winRate) }}</td>
                         <td>
-                            <div
-                                v-for="mon in monData.mons"
-                                class="monicon"
-                                :style="{ backgroundPosition: getSpritePos(mon) }"
-                                :title="getMonData(mon).name"
-                            ></div>
+                            <div class="team-container">
+                                <div
+                                    v-for="mon in monData.mons"
+                                    class="monicon"
+                                    :style="{ backgroundPosition: getSpritePos(mon) }"
+                                    :title="getMonData(mon).name"
+                                ></div>
+                            </div>
                         </td>
                         <td>
                             <a href="" @click="showTeamPopup(monData)"><div class="sm-icon mag-icon"></div>Results</a>
@@ -191,7 +192,7 @@ __TEMPLATE_HEADER__
         <div class="meta-table meta-mons">
 
             <div v-for="monDataHalf in metaMonsData">
-                <table>
+                <table class="meta-mons-half">
                     <thead>
                         <tr>
                             <th>Mon</th>

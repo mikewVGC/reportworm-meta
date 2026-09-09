@@ -227,6 +227,10 @@ table#meta-teams td:nth-child(9) {
     image-rendering: pixelated;
 }
 
+.team-container {
+    width: 240px;
+}
+
 .info-block {
     background: #B8EEFC;
     color: #254852;
@@ -307,6 +311,13 @@ table#meta-teams td:nth-child(9) {
 
 /* this is like 800px display? ... works for sideways phones */
 @media (max-width: 55.5em) {
+    table#meta-teams td:nth-child(8) {
+       width: 120px;
+    }
+
+    .team-container {
+        width: 120px;
+    }
 }
 
 /* mobile */
@@ -403,6 +414,14 @@ table#meta-teams td:nth-child(9) {
     #meta-teams td:nth-child(8)::before {
         content: "Team";
         text-align: left;
+    }
+
+    table#meta-teams td:nth-child(8) {
+       width: 240px;
+    }
+
+    .team-container {
+        width: 240px;
     }
 }
 

@@ -3,9 +3,11 @@
 import argparse
 import itertools
 import json
+import shutil
 
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import datetime, timezone
+from pathlib import Path
 
 from reportworm_builder.builder import Builder
 from reportworm_builder.builder_cache import BuilderCache
@@ -56,10 +58,10 @@ def main():
         with open(config.sprite_coords) as file:
             sprite_coords = json.loads(file.read())
     except FileNotFoundError:
-        # it's okay
+        # it's okay if we can't find this
         ...
 
-    seasons = [ manifest['current'], *manifest['grassroots'] ]
+    seasons = [ manifest['current'], manifest['current'] - 1, *manifest['grassroots'] ]
 
     # loop through and collect events
     events = []
@@ -80,6 +82,7 @@ def main():
                 "year": year,
             })
 
+    # sort by start date
     events = sorted(events, key=lambda e: e['start'], reverse=True)[:10]
     event_format = events[0]['format']
 
@@ -89,7 +92,7 @@ def main():
     meta = {
         "info": {
             "format": event_format,
-            "build": datetime.now().strftime("%b %d, %Y %H:%M EST"),
+            "build": datetime.now(tz=timezone.utc).strftime("%b %d, %Y %H:%M %Z"),
         },
         "events": [],
         "meta": [],
@@ -235,8 +238,15 @@ def main():
                         meta['meta'][n]['data'][i]['wins'] += player['record']['w']
                         meta['meta'][n]['data'][i]['losses'] += player['record']['l']
 
+    dt_str = datetime.now(tz=timezone.utc).strftime("%Y-%m-%d-%H:%M:%S-%Z")
+
     with open(f"{config.output_dir}/report.json", "w") as file:
         file.write(json.dumps(meta, indent=2 if config.mode == 'dev' else None))
+
+    archive_dir = Path(f"{config.output_dir}/archive")
+    archive_dir.mkdir(parents=True, exist_ok=True)
+
+    shutil.copy(f"{config.output_dir}/report.json", f"{config.output_dir}/archive/report-{dt_str}.json")
 
 if __name__ == "__main__":
     main()
