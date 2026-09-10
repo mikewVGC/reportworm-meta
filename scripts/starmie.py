@@ -164,10 +164,13 @@ def main():
             subsets = itertools.combinations(sorted_team, r)
             counts.update(subsets)
 
+    max_count = { 1: 0, 6: 0 }
     grouped_counts = defaultdict(Counter)
     for subset, count in counts.items():
         ct = len(subset)
         grouped_counts[ct][subset] = count
+        if count > max_count[ct]:
+            max_count[ct] = count
 
     min_count = { 1: 4, 6: 2 }
 
@@ -179,7 +182,8 @@ def main():
 
         top_subsets = grouped_counts[size].most_common(None)
         for subset, count in top_subsets:
-            if count < min_count[size]:
+            # skip if the count is below threshold and we have a confirmed max above threshold
+            if count < min_count[size] and max_count[size] > min_count[size]:
                 continue
 
             team_hash = '-'.join(sorted(subset))
