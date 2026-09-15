@@ -54,7 +54,14 @@ header#header h1 {
 
 .tabgroup div {
     display: inline-block;
-    padding: .5em 1em .5em 1em;
+    padding: .1em 1em .1em 1em;
+    margin: .4em 0;
+    border-right: 1px solid #000;
+    font-size: 1.1em;
+}
+
+.tabgroup div:last-child {
+    border: 0;
 }
 
 table {
@@ -465,6 +472,10 @@ table#meta-teams td:nth-child(9) {
     .tabgroup {
         background: #303038;
         border: 1px solid #88888A;
+    }
+
+    .tabgroup div {
+        border-right: 1px solid #E8E8E8;
     }
 
     .popup-main {

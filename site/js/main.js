@@ -44,6 +44,10 @@ export default {
                 case 'report':
                     this.currentView = 'report';
                     break;
+
+                case 'faq':
+                    this.currentView = 'faq';
+                    break;
             }
 
             switch (this.currentView) {
@@ -55,6 +59,10 @@ export default {
                         metaMons: this.metaMons,
                         metaTeams: this.metaTeams,
                         showTeam: this.showTeam,
+                    };
+
+                case 'faq':
+                    return {
                     };
             }
 
@@ -112,7 +120,7 @@ export default {
 
         setCurrentRoute(route) {
             if (!route.length) {
-                route = 'home';
+                route = 'report';
             }
             this.currentRoute = route;
         },
@@ -157,7 +165,6 @@ export default {
                 });
 
                 this.reportLoaded = true;
-                this.currentView = 'report';
             });
         },
 
@@ -260,6 +267,10 @@ export default {
     components: {
         'loading': {
             template: '#loading-template',
+            emits: [
+                'sort-data',
+                'show-team',
+            ],
         },
 
         'report': {
@@ -311,6 +322,14 @@ export default {
                     this.$emit('show-team', { monData: monData });
                 },
             },
+        },
+
+        'faq': {
+            template: '#faq-template',
+            emits: [
+                'sort-data',
+                'show-team',
+            ],
         },
     },
 }
