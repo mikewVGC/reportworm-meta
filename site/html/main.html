@@ -10,7 +10,7 @@ __TEMPLATE_HEADER__
 
                 <div class="close" @click.stop="closePopup()">&times;</div>
 
-                <h2>Top Cut Results</h2>
+                <h2>Team Results</h2>
 
                 <div>
                     <div
@@ -43,6 +43,7 @@ __TEMPLATE_HEADER__
                                         data-pass="1"
                                         target="_blank"
                                     >{{ player['name'] }}<div class="sm-icon ext-link-icon"></div></a>
+                                    <em>{{ player['phase'] == "p2" ? "Phase Two" : "Top Cut" }}</em>
                                 </td>
                                 <td>
                                     <span 
@@ -78,7 +79,7 @@ __TEMPLATE_HEADER__
         </div>
     </nav>
 
-    <p><em>Reportworm Meta</em> builds a snapshot of the current metagame based on results from teams that have top cut official events and certain online tournaments. The intent is to give an idea of what Pokemon are being used to the most success for best of three, open teamsheet tournaments.</p>
+    <p><em>Reportworm Meta</em> builds a snapshot of the current metagame based on results from teams that have made phase two of official events and top cut of certain online tournaments. The intent is to give an idea of what Pokemon are being used to the most success for best of three, open teamsheet tournaments.</p>
 
     <component
         :is="currentView"
@@ -285,15 +286,25 @@ __TEMPLATE_HEADER__
 
     <p><strong>How do teams show up here?</strong></p>
 
-    <p>Teams are taken from the most recent official and grassroots events in the same format (or regulation ruleset). Any team that makes it to Top Cut in one of these tournaments is eligible to show up here, with preference being given to teams that cut more often.</p>
+    <p>Teams are taken from the most recent official and grassroots events in the same format (or regulation ruleset). Any team that makes it to Phase Two of an official tournament (Regional or International) or Top Cut in a grassroots tournaments is eligible to show up here, with preference being given to teams that cut more often.</p>
 
     <p><strong>What's "Top Cut"?</strong></p>
 
     <p>Most VGC tournaments are played in two phases. The first phase is <a href="https://en.wikipedia.org/wiki/Swiss-system_tournament" data-pass="1" target="_blank">Swiss-system</a> where every player plays agaist another player with the same record. At the end of Swiss, players with a specific record will make it to "Top Cut" which seeds these players into a single elimination bracket. Getting to Top Cut indicates excellent performance in the Swiss rounds.</p>
 
+    <p><strong>What's "Phase Two"?</strong></p>
+
+    <p>The Swiss portion of official VGC tournaments is usually broken up into two phases. In the first phase everyone who signed up for the tournament plays. The second phase is reserved for players who win a certain number of games, with the usual requirement that you can lose no more than two games in phase one (denoted by "X-2").</p>
+
     <p><strong>What about "cut rate"?</strong></p>
 
-    <p>"Cut Rate" for each team is simply the total number of times a team made Top Cut divided by the total number of times that team was used across all tournaments. Simply put, it's the percentage of a team that made Top Cut.</p>
+    <p>"Cut Rate" for each team is simply the total number of times a team made Phase Two or Top Cut divided by the total number of times that team was used across all tournaments. Simply put, it's the percentage of a team that made it to Phase Two (for official events) or Top Cut (for grassroots events).</p>
+
+    <p>"Cut Rate" is not an entirelty accurate name given how teams from official events are considered, but I couldn't come up with something better.</p>
+
+    <p><strong>Why are more teams included from official events?</strong></p>
+
+    <p>Official events are usually larger than online events, and often attract the strongest players who are hoping to earn their Worlds invite. As such the teams that players bring to official events tend to push the overall meta forward much more, so they are weighted appropriately. Top Cutting a large grassroots event is still a great accomplishment, however!</p>
 
     <p><strong>Where does team data come from?</strong></p>
 

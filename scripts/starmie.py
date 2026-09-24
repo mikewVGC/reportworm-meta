@@ -123,7 +123,11 @@ def main():
         })
 
         for player in event['standings'].values():
-            if player['cut'] == False:
+
+            # collect cut only for grassroots, day two for official events
+            if event_info['year'] == 'grassroots' and player['cut'] == False:
+                continue
+            elif event_info['year'] != 'grassroots' and player['p2'] == False:
                 continue
 
             team = []
@@ -147,10 +151,15 @@ def main():
             if team_hash not in player_teams:
                 player_teams[team_hash] =[]
 
+            player_phase = "cut"
+            if player['cut'] == False and player['p2'] == True:
+                player_phase = "p2"
+
             player_teams[team_hash].append({
                 "link": f"{event_info['year']}/{event_info['code']}/player/{player['code']}",
                 "name": player['name'],
                 "place": player['place'],
+                "phase": player_phase,
                 "event": event_info['name'],
                 "players": event_info['playerCount'],
             })
@@ -172,7 +181,7 @@ def main():
         if count > max_count[ct]:
             max_count[ct] = count
 
-    min_count = { 1: 4, 6: 2 }
+    min_count = { 1: 5, 6: 3 }
 
     for size in sorted(grouped_counts.keys()):
         meta_info = {
