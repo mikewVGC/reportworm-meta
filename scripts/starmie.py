@@ -181,7 +181,17 @@ def main():
         if count > max_count[ct]:
             max_count[ct] = count
 
-    min_count = { 1: 5, 6: 3 }
+    min_count = { 1: 4, 6: 2 }
+
+    if len(grouped_counts[6]) > 300:
+        min_count[6] = 4
+    elif len(grouped_counts[6]) > 200:
+        min_count[6] = 3
+
+    if len(grouped_counts[1]) > 100:
+        min_count[1] = 6
+    elif len(grouped_counts[1]) > 75:
+        min_count[1] = 5
 
     for size in sorted(grouped_counts.keys()):
         meta_info = {
