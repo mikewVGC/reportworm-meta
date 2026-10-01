@@ -147,9 +147,18 @@ def main():
 
             teams.append(set(team))
 
+            mega_team = filter(lambda m: m.endswith('mega') or m.endswith('megax') or m.endswith('megay') or m.endswith('megaz'), sorted(team))
+
             team_hash = '-'.join(sorted(team))
+            mega_hash = ""
+
+            if len(list(mega_team)) == 2:
+                mega_hash = '-'.join(filter(lambda m: m.endswith('mega') or m.endswith('megax') or m.endswith('megay') or m.endswith('megaz'), sorted(team)))
+
             if team_hash not in player_teams:
-                player_teams[team_hash] =[]
+                player_teams[team_hash] = []
+            if mega_hash not in player_teams:
+                player_teams[mega_hash] = []
 
             player_phase = "cut"
             if player['cut'] == False and player['p2'] == True:
@@ -164,16 +173,46 @@ def main():
                 "players": event_info['playerCount'],
             })
 
+            if len(mega_hash):
+                sorted_team = sorted(team, key=lambda m: (
+                        not m.endswith("megax"),
+                        not m.endswith("megay"),
+                        not m.endswith("megaz"),
+                        not m.endswith("mega"),
+                        m,
+                    )
+                )
+
+                player_teams[mega_hash].append({
+                    "link": f"{event_info['year']}/{event_info['code']}/player/{player['code']}",
+                    "name": player['name'],
+                    "place": player['place'],
+                    "phase": player_phase,
+                    "event": event_info['name'],
+                    "team": sorted_team,
+                    "players": event_info['playerCount'],
+                })
+
+        for hash, players in player_teams.items():
+            player_teams[hash] = sorted(players, key=lambda p: (
+                    p['place']
+                )
+            )
+
     counts = Counter()
 
     for t in teams:
         sorted_team = sorted(list(t))
+        mega_team = filter(lambda m: m.endswith('mega') or m.endswith('megax') or m.endswith('megay') or m.endswith('megaz'), sorted_team)
 
-        for r in [ 1, 6 ]:
-            subsets = itertools.combinations(sorted_team, r)
+        for r in [ 1, 2, 6 ]:
+            if r == 2:
+                subsets = itertools.combinations(mega_team, r)
+            else:
+                subsets = itertools.combinations(sorted_team, r)
             counts.update(subsets)
 
-    max_count = { 1: 0, 6: 0 }
+    max_count = { 1: 0, 2: 0, 6: 0 }
     grouped_counts = defaultdict(Counter)
     for subset, count in counts.items():
         ct = len(subset)
@@ -181,17 +220,24 @@ def main():
         if count > max_count[ct]:
             max_count[ct] = count
 
-    min_count = { 1: 4, 6: 2 }
+    min_count = { 1: 4, 2: 4, 6: 2 }
 
     if len(grouped_counts[6]) > 300:
         min_count[6] = 4
     elif len(grouped_counts[6]) > 200:
         min_count[6] = 3
 
+    if len(grouped_counts[2]) > 150:
+        min_count[2] = 6
+    elif len(grouped_counts[2]) > 100:
+        min_count[2] = 5
+
     if len(grouped_counts[1]) > 100:
         min_count[1] = 6
     elif len(grouped_counts[1]) > 75:
         min_count[1] = 5
+
+    meta_mons = {}
 
     for size in sorted(grouped_counts.keys()):
         meta_info = {
@@ -225,17 +271,24 @@ def main():
                 "mons": team_sorted,
                 "teams": player_teams[team_hash] if team_hash in player_teams else [],
             })
+
+            # commented out since this leaves out some mons for some reason...
+            """
+            # capture only mons used for the teams we're looking at
+            if team_hash in player_teams:
+                for player in player_teams[team_hash]:
+                    if 'team' not in player:
+                        continue
+                    for mon in player['team']:
+                        if mon not in meta_mons:
+                            meta_mons[mon] = mon_lookup[mon]
+            """
             
         meta['meta'].append(meta_info)
 
-    # reduce mon_lookup to just what's needed
-    meta_mons = {}
-    for meta_data in meta['meta']:
-        for mon_data in meta_data['data']:
-            for mon in mon_data['mons']:
-                meta_mons[mon] = mon_lookup[mon]
-
-    meta['lookup'] = meta_mons
+    meta['lookup'] = mon_lookup
+    # use the smaller mon lookup
+    #meta['lookup'] = meta_mons
 
     # loop through events again to collect winrates
     for event_info in events:

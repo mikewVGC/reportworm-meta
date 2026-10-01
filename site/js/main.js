@@ -12,6 +12,7 @@ export default {
             monLookup: {},
             
             metaMons: [],
+            metaCores: [],
             metaTeams: [],
 
             showTeam: false,
@@ -19,6 +20,7 @@ export default {
 
             sorts: {
                 teams: { column: 'count', dir: 1 },
+                cores: { column: 'count', dir: 1 },
                 mons: { column: 'count', dir: 1 },
             },
 
@@ -57,6 +59,7 @@ export default {
                         events: this.events,
                         monLookup: this.monLookup,
                         metaMons: this.metaMons,
+                        metaCores: this.metaCores,
                         metaTeams: this.metaTeams,
                         showTeam: this.showTeam,
                     };
@@ -146,20 +149,28 @@ export default {
                 for (let metaData of d.meta) {
                     switch (metaData.size) {
                         case 1:
-                            this.metaMons = metaData;
+                            this.metaMons = metaData.data;
+                            break;
+                        case 2:
+                            this.metaCores = metaData.data;
                             break;
                         case 6:
-                            this.metaTeams = metaData;
+                            this.metaTeams = metaData.data;
                             break;
                     }
                 }
 
-                this.metaTeams.data.forEach(m => {
+                this.metaTeams.forEach(m => {
                     m.cutRate = m.count / m.total;
                     m.winRate = m.wins / (m.losses + m.wins);
                 });
 
-                this.metaMons.data.forEach(m => {
+                this.metaCores.forEach(m => {
+                    m.cutRate = m.count / m.total;
+                    m.winRate = m.wins / (m.losses + m.wins);
+                });
+
+                this.metaMons.forEach(m => {
                     m.cutRate = m.count / m.total;
                     m.winRate = m.wins / (m.losses + m.wins);
                 });
@@ -207,7 +218,10 @@ export default {
             } = sortData;
 
             let sortInfo = this.sorts[sortType];
-            let sortList = sortType == 'mons' ? this.metaMons : this.metaTeams;
+            let sortList = sortType == 'mons' ? 
+                this.metaMons : (
+                    sortType == 'cores' ? this.metaCores : this.metaTeams
+                );
 
             if (sortInfo.column == column) {
                 sortInfo.dir *= -1;
@@ -216,7 +230,7 @@ export default {
                 sortInfo.dir = 1;
             }
 
-            sortList.data.sort((a, b) => {
+            sortList.sort((a, b) => {
                 if (a[column] < b[column]) {
                     return sortInfo.dir;
                 } else if (a[column] > b[column]) {
@@ -232,11 +246,12 @@ export default {
             if (!this.sortTables) {
                 this.sortTables = {
                     teams: document.querySelectorAll('#meta-teams th'),
+                    cores: document.querySelectorAll('.meta-duos-half th'),
                     mons: document.querySelectorAll('.meta-mons-half th'),
                 };
             }
 
-            for (let sort of [ 'teams', 'mons' ]) {
+            for (let sort of [ 'teams', 'cores', 'mons' ]) {
                 Array.from(this.sortTables[sort]).forEach(c => {
                     c.classList.remove('up', 'down');
                     if (this.sorts[sort].column == c.dataset.column) {
@@ -280,15 +295,23 @@ export default {
                 'events',
                 'monLookup',
                 'metaMons',
+                'metaCores',
                 'metaTeams',
                 'showTeam',
             ],
             computed: {
                 metaMonsData: function() {
-                    const mid = Math.ceil(this.metaMons.data.length / 2);
+                    const mid = Math.ceil(this.metaMons.length / 2);
                     return [
-                        this.metaMons.data.slice(0, mid),
-                        this.metaMons.data.slice(mid),
+                        this.metaMons.slice(0, mid),
+                        this.metaMons.slice(mid),
+                    ];
+                },
+                metaCoresData: function() {
+                    const mid = Math.ceil(this.metaCores.length / 2);
+                    return [
+                        this.metaCores.slice(0, mid),
+                        this.metaCores.slice(mid),
                     ];
                 },
             },
@@ -309,6 +332,12 @@ export default {
                 sortTeams(e) {
                     this.$emit('sort-data', {
                         type: 'teams',
+                        column: e.target.dataset.column,
+                    });
+                },
+                sortCores(e) {
+                    this.$emit('sort-data', {
+                        type: 'cores',
                         column: e.target.dataset.column,
                     });
                 },

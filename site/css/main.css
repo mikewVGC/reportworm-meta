@@ -188,29 +188,29 @@ table#meta-teams td:nth-child(9) {
     text-align: left;
 }
 
-.meta-mons {
+.meta-half {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1em;
 }
 
-.meta-mons > div {
+.meta-half > div {
     overflow: scroll;
 }
 
-.meta-mons table {
+.meta-half table {
     font-size: .9em;
 }
 
-.meta-mons table td:nth-child(5) {
+.meta-half table td:nth-child(5) {
     text-align: right;
 }
 
-.meta-mons table td:nth-child(6) {
+.meta-half table td:nth-child(6) {
     text-align: center;
 }
 
-.meta-mons table td:nth-child(7) {
+.meta-half table td:nth-child(7) {
     text-align: left;
 }
 
@@ -236,6 +236,23 @@ table#meta-teams td:nth-child(9) {
 
 .team-container {
     width: 240px;
+}
+
+.duo-container {
+    width: 80px;
+}
+
+.meta-duos-half td {
+    font-size: .9em;
+}
+
+.meta-duos-half td:first-child {
+    text-align: center;
+}
+
+.meta-duos-half td:nth-child(2),
+.meta-duos-half td:nth-child(3) {
+    font-size: 1em;
 }
 
 .info-block {
@@ -338,7 +355,7 @@ table#meta-teams td:nth-child(9) {
         width: calc(100% - 2em - 2px);
     }
 
-    .meta-mons {
+    .meta-half {
         display: block;
     }
 

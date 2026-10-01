@@ -10,7 +10,7 @@ __TEMPLATE_HEADER__
 
                 <div class="close" @click.stop="closePopup()">&times;</div>
 
-                <h2>Team Results</h2>
+                <h2>Detailed Results</h2>
 
                 <div>
                     <div
@@ -21,7 +21,7 @@ __TEMPLATE_HEADER__
                     ></div>
                 </div>
 
-                <p><strong>Team:</strong> {{ teamPlayers.fullTeamString }}</p>
+                <p>{{ teamPlayers.fullTeamString }}</p>
 
                 <div class="content-scroll">
 
@@ -30,30 +30,40 @@ __TEMPLATE_HEADER__
                             <tr>
                                 <th colspan="3">Place</th>
                                 <th>Player</th>
-                                <th colspan="2">Event</th>
+                                <th></th>
+                                <th>Event</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="player in teamPlayers.teams">
-                                <td>{{ player['place'] }}</td>
+                                <td>{{ player.place }}</td>
                                 <td>/</td>
-                                <td>{{ player['players'] }}</td>
+                                <td>{{ player.players }}</td>
                                 <td>
-                                    <a :href="`https://standings.reportworm.com/${player['link']}`"
+                                    <a :href="`https://standings.reportworm.com/${player.link}`"
                                         data-pass="1"
                                         target="_blank"
                                     >{{ player['name'] }}<div class="sm-icon ext-link-icon"></div></a>
-                                    <em>{{ player['phase'] == "p2" ? "Phase Two" : "Top Cut" }}</em>
+                                    <em>{{ player.phase == "p2" ? "Phase Two" : "Top Cut" }}</em>
+                                    <div v-if="player.team">
+                                        <div
+                                            v-for="mon in player.team"
+                                            class="monicon"
+                                            :style="{ backgroundPosition: getSpritePos(mon) }"
+                                            :title="getMonData(mon).name"
+                                        ></div>
+                                    </div>
                                 </td>
                                 <td>
                                     <span 
+                                        title="Official Event"
                                         v-if="!player['link'].startsWith('grassroots')" 
                                         v-cloak
                                     >&#9733;</span>
                                 </td>
                                 <td>
-                                    <strong>{{ player['event'] }}</strong><br />
-                                    <em>{{ player['link'].startsWith('grassroots') ? 'Grassroots' : 'Official' }}</em>
+                                    <strong>{{ player.event }}</strong><br />
+                                    <em>{{ player.link.startsWith('grassroots') ? 'Grassroots' : 'Official' }}</em>
                                 </td>
                             </tr>
                         </tbody>
@@ -166,7 +176,7 @@ __TEMPLATE_HEADER__
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="monData in metaTeams.data">
+                    <tr v-for="monData in metaTeams">
                         <td>{{ monData.count }}</td>
                         <td>{{ monData.total }}</td>
                         <td>{{ getPct(monData.cutRate) }}</td>
@@ -193,9 +203,72 @@ __TEMPLATE_HEADER__
 
         </div>
 
+        <h3>Most Successful Mega Duos</h3>
+
+        <div class="meta-table meta-half">
+
+            <div v-for="monDataHalf in metaCoresData">
+                <table class="meta-duos-half">
+                    <thead>
+                        <tr>
+                            <th>Duo</th>
+                            <th class="sortable down"
+                                data-column="count"
+                                @click="sortCores"
+                            >Cut</th>
+                            <th class="sortable"
+                                data-column="total"
+                                @click="sortCores"
+                            >Total</th>
+                            <th class="sortable"
+                                data-column="cutRate"
+                                @click="sortCores"
+                                title="Cut Rate"
+                            >CR</th>
+                            <th colspan="3"
+                                class="sortable"
+                                data-column="wins"
+                                @click="sortCores"
+                            >Record</th>
+                            <th class="sortable"
+                                data-column="winRate"
+                                @click="sortCores"
+                            >WR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="monData in monDataHalf">
+                            <td>
+                                <a href="" @click="showTeamPopup(monData)">
+                                    <div class="duo-container">
+                                        <div
+                                            v-for="mon in monData.mons"
+                                            class="monicon"
+                                            :style="{ backgroundPosition: getSpritePos(mon) }"
+                                            :title="getMonData(mon).name"
+                                        ></div>
+                                    </div>
+                                    <div class="sm-icon mag-icon"></div>Results
+                                </a>
+                            </td>
+                            <td>{{ monData.count }}</td>
+                            <td>{{ monData.total }}</td>
+                            <td>{{ getPct(monData.cutRate) }}</td>
+                            <td>{{ monData.wins }}</td>
+                            <td>-</td>
+                            <td>{{ monData.losses }}</td>
+                            <td>{{ getPct(monData.winRate) }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
         <h3>Most Successful Pokemon</h3>
 
-        <div class="meta-table meta-mons">
+        <div class="meta-table meta-half">
 
             <div v-for="monDataHalf in metaMonsData">
                 <table class="meta-mons-half">
