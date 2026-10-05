@@ -284,7 +284,7 @@ export default {
             const { search: searchStr } = searchData;
 
             this.monsSearchStr = searchStr;
-            this.monsSearch = searchStr.split(' ').filter(s => s.length);
+            this.monsSearch = searchStr.split(' ').filter(s => s.length).map(s => s.toLowerCase());
         },
 
         showTeamPopup(teamData) {
