@@ -8,60 +8,19 @@ a {
     color: #0D47A1;
 }
 
-h2 em, h3 em {
+h2 em, h3 em, h3 span {
     font-size: .8em;
     color: #66666A;
     font-weight: normal;
 }
 
-div#app {
-    max-width: 50em;
-    margin: auto;
-    position: relative;
-}
-
-header#header {
-    position: relative;
-}
-
-header#header a {
-    display: block;
-    height: 90%;
-    width: 100%;
-    max-width: 375px;
-}
-
-header#header h1 {
-    height: 160px;
-    margin: 0;
-    font-size: 0;
-    background-image: url(/static/img/logo-black.png);
-    background-repeat: no-repeat;
-    background-size: auto 150px;
-    background-position-y: 5px;
-    position: relative;
-    z-index: 1;
-}
-
-.tabgroup {
-    background: #F0F0F0;
-    border: 1px solid #254852;
-    border-radius: .45em;
-    padding: .2em 0;
-    position: relative;
-    top: -10px;
-}
-
-.tabgroup div {
-    display: inline-block;
-    padding: .1em 1em .1em 1em;
-    margin: .4em 0;
-    border-right: 1px solid #000;
-    font-size: 1.1em;
-}
-
-.tabgroup div:last-child {
-    border: 0;
+input, select {
+    border: 1px solid #000000;
+    border-radius: .4em;
+    height: 1.75em;
+    font-size: 1em;
+    padding: .25em;
+    box-sizing: border-box;
 }
 
 table {
@@ -110,6 +69,36 @@ th.sortable.down {
     background-image: url(/static/img/sort-down.png);
 }
 
+
+div#app {
+    max-width: 50em;
+    margin: auto;
+    position: relative;
+}
+
+header#header {
+    position: relative;
+}
+
+header#header a {
+    display: block;
+    height: 90%;
+    width: 100%;
+    max-width: 375px;
+}
+
+header#header h1 {
+    height: 160px;
+    margin: 0;
+    font-size: 0;
+    background-image: url(/static/img/logo-black.png);
+    background-repeat: no-repeat;
+    background-size: auto 150px;
+    background-position-y: 5px;
+    position: relative;
+    z-index: 1;
+}
+
 footer {
     text-align: center;
     font-size: .8em;
@@ -121,6 +110,27 @@ footer p {
 
 [v-cloak] {
     display: none !important;
+}
+
+.tabgroup {
+    background: #F0F0F0;
+    border: 1px solid #254852;
+    border-radius: .45em;
+    padding: .2em 0;
+    position: relative;
+    top: -10px;
+}
+
+.tabgroup div {
+    display: inline-block;
+    padding: .1em 1em .1em 1em;
+    margin: .4em 0;
+    border-right: 1px solid #000;
+    font-size: 1.1em;
+}
+
+.tabgroup div:last-child {
+    border: 0;
 }
 
 .popup-main {
@@ -168,6 +178,10 @@ footer p {
 
 .meta-table table td {
     text-align: right;
+}
+
+.meta-table table td.no-match {
+    text-align: left;
 }
 
 .meta-table table td:nth-child(5) {
@@ -333,6 +347,24 @@ table#meta-teams td:nth-child(9) {
     margin-right: .25em;
 }
 
+.meta-search span {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 1.5em;
+    padding-left: .25em;
+}
+
+.meta-search div {
+    font-size: .8em;
+    padding-top: .5em;
+}
+
+.meta-search input {
+    height: 2.5em;
+    width: 65%;
+    font-size: 1.1em;
+}
+
 /* this is like 800px display? ... works for sideways phones */
 @media (max-width: 55.5em) {
     table#meta-teams td:nth-child(8) {
@@ -460,7 +492,7 @@ table#meta-teams td:nth-child(9) {
         color: #4FC3F7;
     }
 
-    h2 em, h3 em {
+    h2 em, h3 em, h3 span {
         color: #A0A0A0;
     }
 

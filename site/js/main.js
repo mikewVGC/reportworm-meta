@@ -15,6 +15,9 @@ export default {
             metaCores: [],
             metaTeams: [],
 
+            monsSearchStr: '',
+            monsSearch: [],
+
             showTeam: false,
             teamPlayers: [],
 
@@ -62,6 +65,8 @@ export default {
                         metaCores: this.metaCores,
                         metaTeams: this.metaTeams,
                         showTeam: this.showTeam,
+                        monsSearchStr: this.monsSearchStr,
+                        monsSearch: this.monsSearch,
                     };
 
                 case 'faq':
@@ -106,9 +111,23 @@ export default {
             });
 
             document.addEventListener("keydown", (e) => {
+                // ctrl+F, F3, cmd+F use the built in searches
+                if (e.code === 'F3' || ((e.ctrlKey || e.metaKey) && e.code === 'KeyF')) {
+                    if (this.currentView == 'report') {
+                        document.getElementById('mon-filter').focus();
+                        e.preventDefault();
+                    }
+                }
+
                 if (event.key === 'Escape') {
+                    // close popup
                     if (this.showTeam) {
                         this.closePopup();
+                    }
+
+                    // clear/reset search
+                    if (this.currentView == 'report') {
+                        this.filterAllData({ search: '' });
                     }
                 }
             });
@@ -261,6 +280,13 @@ export default {
             }
         },
 
+        filterAllData(searchData) {
+            const { search: searchStr } = searchData;
+
+            this.monsSearchStr = searchStr;
+            this.monsSearch = searchStr.split(' ').filter(s => s.length);
+        },
+
         showTeamPopup(teamData) {
             this.teamPlayers = teamData.monData;
 
@@ -298,8 +324,21 @@ export default {
                 'metaCores',
                 'metaTeams',
                 'showTeam',
+                'monsSearchStr',
+                'monsSearch',
             ],
             computed: {
+                metaTeamsData: function() {
+                    return this.metaTeams.filter(teamData => {
+                        if (this.monsSearch.length) {
+                            return this.monsSearch.every(
+                                s => teamData.mons.some(m => m.includes(s))
+                            );
+                        }
+
+                        return teamData;
+                    });
+                },
                 metaMonsData: function() {
                     const mid = Math.ceil(this.metaMons.length / 2);
                     return [
@@ -308,16 +347,27 @@ export default {
                     ];
                 },
                 metaCoresData: function() {
-                    const mid = Math.ceil(this.metaCores.length / 2);
+                    let filteredCores = this.metaCores.filter(coreData => {
+                        if (this.monsSearch.length) {
+                            return this.monsSearch.every(
+                                s => coreData.mons.some(m => m.includes(s))
+                            );
+                        }
+
+                        return coreData;
+                    });
+
+                    const mid = Math.ceil(filteredCores.length / 2);
                     return [
-                        this.metaCores.slice(0, mid),
-                        this.metaCores.slice(mid),
+                        filteredCores.slice(0, mid),
+                        filteredCores.slice(mid),
                     ];
                 },
             },
             emits: [
                 'sort-data',
                 'show-team',
+                'search-data',
             ],
             methods: {
                 getMonData(monCode) {
@@ -349,6 +399,16 @@ export default {
                 },
                 showTeamPopup(monData) {
                     this.$emit('show-team', { monData: monData });
+                },
+                filterAllMons(e) {
+                    this.$emit('search-data', {
+                        search: e.target.value,
+                    });
+                },
+                clearMonFilter() {
+                    this.$emit('search-data', {
+                        search: '',
+                    });
                 },
             },
         },

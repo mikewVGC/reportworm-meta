@@ -96,6 +96,7 @@ __TEMPLATE_HEADER__
         v-bind="currentProps"
         @sort-data="sortData"
         @show-team="showTeamPopup"
+        @search-data="filterAllData"
     ></component>
 
     <h2 @click="toggleCredits()" id="creditsTitle">
@@ -141,9 +142,28 @@ __TEMPLATE_HEADER__
         <p><strong>Compiled:</strong> <em>{{ info.build }}</em></p>
     </div>
 
+    <div class="meta-search">
+        <input
+            type="text"
+            id="mon-filter"
+            placeholder="Filter by Pokemon name(s)"
+            @input="filterAllMons"
+            :value="monsSearchStr"
+        />
+        <span
+            v-if="monsSearchStr.length"
+            @click="clearMonFilter"
+            v-cloak
+        >&times;</span>
+
+        <div>
+            <strong>Pro Tip:</strong> Search for multiple Pokemon to match narrow down your search.
+        </div>
+    </div>
+
     <div class="meta-layout">
 
-        <h3>Most Successful Teams</h3>
+        <h3>Most Successful Teams <span v-if="monsSearchStr.length" v-cloak>(Filtered)</span></h3>
 
         <div class="meta-table">
 
@@ -176,7 +196,7 @@ __TEMPLATE_HEADER__
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="monData in metaTeams">
+                    <tr v-for="monData in metaTeamsData">
                         <td>{{ monData.count }}</td>
                         <td>{{ monData.total }}</td>
                         <td>{{ getPct(monData.cutRate) }}</td>
@@ -198,16 +218,19 @@ __TEMPLATE_HEADER__
                             <a href="" @click="showTeamPopup(monData)"><div class="sm-icon mag-icon"></div>Results</a>
                         </td>
                     </tr>
+                    <tr v-if="!metaTeamsData.length">
+                        <td colspan="9" class="no-match">Sorry, no teams match that criteria.</td>
+                    </tr>
                 </tbody>
             </table>
 
         </div>
 
-        <h3>Most Successful Mega Duos</h3>
+        <h3>Most Successful Mega Duos <span v-if="monsSearchStr.length" v-cloak>(Filtered)</span></h3>
 
         <div class="meta-table meta-half">
 
-            <div v-for="monDataHalf in metaCoresData">
+            <div v-for="monDataHalf, i in metaCoresData">
                 <table class="meta-duos-half">
                     <thead>
                         <tr>
@@ -258,6 +281,12 @@ __TEMPLATE_HEADER__
                             <td>-</td>
                             <td>{{ monData.losses }}</td>
                             <td>{{ getPct(monData.winRate) }}</td>
+                        </tr>
+                        <tr v-if="!monDataHalf.length">
+                            <td colspan="9" class="no-match">
+                                <div v-if="i == 0">Sorry, no duos match that criteria.</div>
+                                <div v-else>-</div>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
